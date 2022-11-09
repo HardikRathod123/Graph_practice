@@ -1,0 +1,44 @@
+   
+   
+   bool dfs(unordered_map<string, vector<pair<string, double>>> adj, double &val, string start, string end, unordered_set<string> &vis){
+        if(start == end) return true;
+        
+        for(auto a : adj[start]){
+            if(vis.find(a.first) == vis.end()){
+                vis.insert(a.first);
+                val *= a.second; 
+                // cout<<val<<" ";
+                if(dfs(adj, val, a.first, end, vis)) return true;
+                val /= a.second;
+            }
+        }
+        return false;
+    }
+    
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        unordered_map<string, vector<pair<string, double>>> adj;
+        
+        for(int i = 0; i < equations.size(); i++){
+            string a = equations[i][0];
+            string b = equations[i][1];
+            double val = values[i];
+            
+            adj[a].push_back({b, val}) ;
+            adj[b].push_back({a, (double)1/val});
+        }
+        vector<double> ans;
+        for(int i = 0; i < queries.size(); i++){
+            unordered_set<string> vis;
+            string start = queries[i][0], end = queries[i][1];
+            
+            if( (adj.find(start) == adj.end())  || (adj.find(end)) == adj.end() ){
+                ans.push_back(-1);
+            }
+            else{
+                double val = 1;
+                if(!dfs(adj, val, start, end, vis)) val = -1;     
+                ans.push_back(val);
+            }            
+        }
+        return ans;
+    }
