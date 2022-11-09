@@ -1,4 +1,4 @@
-```ruby
+```C++
 class Solution {
 public:
     int total = 0;
